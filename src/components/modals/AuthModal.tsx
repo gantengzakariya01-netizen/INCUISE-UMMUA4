@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useUI } from '../../context/UIContext';
 import { Modal } from '../ui/Modal';
-import { Lock, Mail, User, Phone, ShieldAlert, ArrowRight, KeyRound } from 'lucide-react';
+import { Lock, Mail, User, Phone, ShieldAlert, ArrowRight, KeyRound, Sparkles } from 'lucide-react';
 
 export const AuthModal: React.FC = () => {
-  const { isAuthOpen, setIsAuthOpen, showToast } = useUI();
+  const { isAuthOpen, setIsAuthOpen, authInitialTab, setIsAdminOpen, showToast } = useUI();
   const { loginCustomer, loginAdmin, registerCustomer, resetPassword } = useAuth();
 
   const [activeTab, setActiveTab] = useState<'LOGIN' | 'REGISTER' | 'ADMIN' | 'RESET'>('LOGIN');
@@ -16,6 +16,16 @@ export const AuthModal: React.FC = () => {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (isAuthOpen && authInitialTab) {
+      setActiveTab(authInitialTab);
+      if (authInitialTab === 'ADMIN') {
+        setEmail('AMALIA ROSVALITA');
+        setPassword('akhsya.ais.afi.aira');
+      }
+    }
+  }, [isAuthOpen, authInitialTab]);
 
   if (!isAuthOpen) return null;
 
@@ -41,8 +51,9 @@ export const AuthModal: React.FC = () => {
     try {
       const res = await loginAdmin(email, password);
       if (res.success) {
-        showToast('Portal Admin berhasil diverifikasi. Selamat bertugas!', 'success');
+        showToast('Selamat datang Admin AMALIA ROSVALITA! Membuka Portal Administrasi...', 'success');
         setIsAuthOpen(false);
+        setIsAdminOpen(true);
       } else {
         showToast(res.error || 'Akses Portal Admin ditolak.', 'error');
       }
@@ -251,43 +262,64 @@ export const AuthModal: React.FC = () => {
 
         {/* Admin Login Form */}
         {activeTab === 'ADMIN' && (
-          <form onSubmit={handleAdminLoginSubmit} className="space-y-4 animate-fade-in p-4 rounded-2xl bg-amber-950/20 border border-amber-500/30">
-            <div className="flex items-center gap-2 text-amber-300 text-xs font-bold mb-2">
-              <ShieldAlert className="w-4 h-4" />
-              <span>Akses Terbatas: Super Admin / Admin / Staff</span>
+          <form onSubmit={handleAdminLoginSubmit} className="space-y-4 animate-fade-in p-5 rounded-2xl bg-gradient-to-b from-amber-950/40 to-[#180a2a] border border-amber-500/40 shadow-xl">
+            <div className="flex items-center justify-between pb-2 border-b border-amber-500/20">
+              <div className="flex items-center gap-2 text-amber-300 text-xs font-bold">
+                <ShieldAlert className="w-4 h-4 text-amber-400" />
+                <span>Portal Khusus: AMALIA ROSVALITA (Super Admin)</span>
+              </div>
+            </div>
+
+            {/* Credential Helper Box */}
+            <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5">
+              <div className="text-[11px] text-amber-200/90 leading-tight">
+                <div><span className="text-white/60">Admin:</span> <strong className="text-white">AMALIA ROSVALITA</strong></div>
+                <div><span className="text-white/60">Sandi:</span> <strong className="text-amber-300 font-mono">akhsya.ais.afi.aira</strong></div>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setEmail('AMALIA ROSVALITA');
+                  setPassword('akhsya.ais.afi.aira');
+                }}
+                className="px-2.5 py-1.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/40 text-amber-200 text-[10px] font-bold border border-amber-400/40 flex items-center gap-1 transition-all shrink-0"
+              >
+                <Sparkles className="w-3 h-3 text-amber-300" />
+                <span>Isi Otomatis</span>
+              </button>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-white/80 mb-1">Email Administrator</label>
+              <label className="block text-xs font-semibold text-white/90 mb-1">Nama Admin atau Email</label>
               <input
-                type="email"
+                type="text"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="admin@cuisene-ummua4.id"
-                className="w-full px-3 py-2 text-xs rounded-xl bg-[#180a2a] border border-amber-500/40 text-white placeholder-white/40 focus:outline-none focus:border-amber-400"
+                placeholder="AMALIA ROSVALITA"
+                className="w-full px-3.5 py-2.5 text-xs rounded-xl bg-[#180a2a] border border-amber-500/40 text-white placeholder-white/40 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-white/80 mb-1">Kata Sandi Otorisasi</label>
+              <label className="block text-xs font-semibold text-white/90 mb-1">Kata Sandi Otorisasi</label>
               <input
                 type="password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="admin123"
-                className="w-full px-3 py-2 text-xs rounded-xl bg-[#180a2a] border border-amber-500/40 text-white placeholder-white/40 focus:outline-none focus:border-amber-400"
+                placeholder="akhsya.ais.afi.aira"
+                className="w-full px-3.5 py-2.5 text-xs rounded-xl bg-[#180a2a] border border-amber-500/40 text-white placeholder-white/40 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 font-mono"
               />
             </div>
 
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full bg-gradient-to-r from-amber-500 to-amber-700 hover:from-amber-400 hover:to-amber-600 text-black py-3 rounded-xl text-xs font-bold flex items-center justify-center gap-2 shadow-lg"
+              className="w-full bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black font-extrabold py-3 rounded-xl text-xs flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(245,158,11,0.3)] transition-all"
             >
-              <KeyRound className="w-4 h-4" />
-              <span>{isSubmitting ? 'Verifikasi Otorisasi...' : 'Masuk Portal Admin'}</span>
+              <KeyRound className="w-4 h-4 text-black" />
+              <span>{isSubmitting ? 'Memverifikasi Akses...' : 'Masuk Sebagai AMALIA ROSVALITA'}</span>
             </button>
           </form>
         )}

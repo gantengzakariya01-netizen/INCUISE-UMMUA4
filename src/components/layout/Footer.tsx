@@ -1,7 +1,9 @@
 import React from 'react';
 import { MapPin, Phone, Mail, Clock, Share2, Globe, Award, ShieldCheck } from 'lucide-react';
+import { useUI } from '../../context/UIContext';
 
 export const Footer: React.FC = () => {
+  const { openAuthModal } = useUI();
   return (
     <footer className="w-full bg-[#07020e] border-t border-[#d4af37]/20 pt-16 pb-24 md:pb-12 text-[#bda8d6]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -103,7 +105,12 @@ export const Footer: React.FC = () => {
           <div className="flex items-center gap-6">
             <a href="#" className="hover:text-white transition-colors">Syarat & Ketentuan</a>
             <a href="#" className="hover:text-white transition-colors">Kebijakan Privasi</a>
-            <a href="#" className="hover:text-white transition-colors">Portal Admin</a>
+            <button
+              onClick={() => openAuthModal('ADMIN')}
+              className="hover:text-[#d4af37] transition-colors"
+            >
+              Portal Admin
+            </button>
           </div>
         </div>
       </div>

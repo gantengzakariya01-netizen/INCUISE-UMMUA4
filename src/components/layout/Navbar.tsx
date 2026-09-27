@@ -9,6 +9,7 @@ export const Navbar: React.FC = () => {
   const {
     setIsCartOpen,
     setIsAuthOpen,
+    openAuthModal,
     setIsProfileOpen,
     setIsAdminOpen,
     openTrackingForOrder,
@@ -149,10 +150,11 @@ export const Navbar: React.FC = () => {
                 {['SUPER_ADMIN', 'ADMIN', 'STAFF'].includes(role) && (
                   <button
                     onClick={() => setIsAdminOpen(true)}
-                    className="p-2.5 rounded-full bg-amber-500/20 hover:bg-amber-500/40 border border-amber-400/50 text-amber-300 transition-all"
-                    title="Portal Admin"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-amber-500/25 to-amber-600/35 hover:from-amber-500/45 hover:to-amber-600/55 border border-amber-400/60 text-amber-300 text-xs font-bold transition-all shadow-[0_0_15px_rgba(245,158,11,0.3)] animate-pulse-glow"
+                    title="Buka Portal Dashboard Restoran"
                   >
-                    <ShieldAlert className="w-4 h-4" />
+                    <ShieldAlert className="w-4 h-4 text-amber-400" />
+                    <span className="hidden sm:inline">Dashboard Admin</span>
                   </button>
                 )}
 
@@ -165,13 +167,25 @@ export const Navbar: React.FC = () => {
                 </button>
               </div>
             ) : (
-              <button
-                onClick={() => setIsAuthOpen(true)}
-                className="btn-gold px-4 py-2 rounded-full text-xs flex items-center gap-2"
-              >
-                <User className="w-3.5 h-3.5" />
-                <span>Masuk / Daftar</span>
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => openAuthModal('LOGIN')}
+                  className="btn-gold px-3.5 py-2 rounded-full text-xs font-bold flex items-center gap-1.5"
+                >
+                  <User className="w-3.5 h-3.5" />
+                  <span>Masuk</span>
+                </button>
+
+                {/* Direct Admin Login Button */}
+                <button
+                  onClick={() => openAuthModal('ADMIN')}
+                  className="px-3 py-2 rounded-full bg-amber-500/15 hover:bg-amber-500/30 border border-amber-400/50 text-amber-300 text-xs font-bold flex items-center gap-1.5 transition-all shadow-[0_0_12px_rgba(245,158,11,0.2)]"
+                  title="Login Admin: AMALIA ROSVALITA"
+                >
+                  <ShieldAlert className="w-3.5 h-3.5 text-amber-400" />
+                  <span>Admin</span>
+                </button>
+              </div>
             )}
           </div>
         </div>

@@ -14,6 +14,8 @@ interface UIContextType {
   
   isAuthOpen: boolean;
   setIsAuthOpen: (open: boolean) => void;
+  authInitialTab: 'LOGIN' | 'REGISTER' | 'ADMIN' | 'RESET';
+  openAuthModal: (tab?: 'LOGIN' | 'REGISTER' | 'ADMIN' | 'RESET') => void;
 
   isProfileOpen: boolean;
   setIsProfileOpen: (open: boolean) => void;
@@ -49,6 +51,12 @@ const UIContext = createContext<UIContextType | undefined>(undefined);
 export const UIProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [authInitialTab, setAuthInitialTab] = useState<'LOGIN' | 'REGISTER' | 'ADMIN' | 'RESET'>('LOGIN');
+
+  const openAuthModal = (tab: 'LOGIN' | 'REGISTER' | 'ADMIN' | 'RESET' = 'LOGIN') => {
+    setAuthInitialTab(tab);
+    setIsAuthOpen(true);
+  };
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isTrackingOpen, setIsTrackingOpen] = useState(false);
@@ -85,6 +93,8 @@ export const UIProvider: React.FC<{ children: React.ReactNode }> = ({ children }
         setIsCartOpen,
         isAuthOpen,
         setIsAuthOpen,
+        authInitialTab,
+        openAuthModal,
         isProfileOpen,
         setIsProfileOpen,
         isCheckoutOpen,

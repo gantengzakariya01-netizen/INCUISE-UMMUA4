@@ -27,11 +27,11 @@ const DEMO_CUSTOMER: UserProfile = {
 };
 
 const DEMO_ADMIN: UserProfile = {
-  id: 'usr-admin-001',
-  email: 'admin@cuisene-ummua4.id',
-  full_name: 'Dato Sultan Ummu A4',
-  phone: '081100009999',
-  avatar_url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80',
+  id: 'usr-admin-amalia',
+  email: 'amalia@cuisene-ummua4.id',
+  full_name: 'AMALIA ROSVALITA',
+  phone: '081234567890',
+  avatar_url: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=200&q=80',
   role: 'SUPER_ADMIN'
 };
 
@@ -146,20 +146,33 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
       }
 
-      // Demo Admin Auth
+      // Demo Admin Auth for AMALIA ROSVALITA
       if (email.toLowerCase().includes('staff')) {
         setUser(DEMO_STAFF);
         localStorage.setItem('cuisene_auth_user', JSON.stringify(DEMO_STAFF));
         return { success: true };
       }
 
-      if (pass === 'admin123' || email.includes('admin') || pass.length >= 6) {
-        setUser(DEMO_ADMIN);
-        localStorage.setItem('cuisene_auth_user', JSON.stringify(DEMO_ADMIN));
+      // Check credentials for AMALIA ROSVALITA
+      const cleanIdent = email.trim().toLowerCase();
+      const isPasswordCorrect = pass === 'akhsya.ais.afi.aira' || pass === 'admin123';
+
+      if (isPasswordCorrect) {
+        const adminUser: UserProfile = {
+          ...DEMO_ADMIN,
+          full_name: 'AMALIA ROSVALITA',
+          email: email.includes('@') ? email : 'amalia@cuisene-ummua4.id',
+          role: 'SUPER_ADMIN'
+        };
+        setUser(adminUser);
+        localStorage.setItem('cuisene_auth_user', JSON.stringify(adminUser));
         return { success: true };
       }
 
-      return { success: false, error: 'Kredensial Admin tidak valid.' };
+      return {
+        success: false,
+        error: 'Kata sandi Admin salah. Gunakan sandi: akhsya.ais.afi.aira'
+      };
     } catch (err: any) {
       return { success: false, error: err.message || 'Login Admin gagal.' };
     } finally {
