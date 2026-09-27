@@ -154,7 +154,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       // Check credentials for AMALIA ROSVALITA
-      const cleanIdent = email.trim().toLowerCase();
       const isPasswordCorrect = pass === 'akhsya.ais.afi.aira' || pass === 'admin123';
 
       if (isPasswordCorrect) {

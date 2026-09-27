@@ -8,7 +8,6 @@ export const Navbar: React.FC = () => {
   const { cart, latestOrder } = useCart();
   const {
     setIsCartOpen,
-    setIsAuthOpen,
     openAuthModal,
     setIsProfileOpen,
     setIsAdminOpen,
