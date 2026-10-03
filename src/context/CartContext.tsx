@@ -39,23 +39,23 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [cart, setCart] = useState<CartItem[]>(() => {
-    const saved = localStorage.getItem('cuisene_cart');
+    const saved = localStorage.getItem('muscle_chicken_cart') || localStorage.getItem('cuisene_cart');
     return saved ? JSON.parse(saved) : [];
   });
 
   const [activePromo, setActivePromo] = useState<Promo | null>(null);
   const [selectedZone, setSelectedZone] = useState<DeliveryZone>(INITIAL_DELIVERY_ZONES[0]);
   const [orders, setOrders] = useState<Order[]>(() => {
-    const saved = localStorage.getItem('cuisene_orders');
+    const saved = localStorage.getItem('muscle_chicken_orders') || localStorage.getItem('cuisene_orders');
     return saved ? JSON.parse(saved) : [];
   });
 
   useEffect(() => {
-    localStorage.setItem('cuisene_cart', JSON.stringify(cart));
+    localStorage.setItem('muscle_chicken_cart', JSON.stringify(cart));
   }, [cart]);
 
   useEffect(() => {
-    localStorage.setItem('cuisene_orders', JSON.stringify(orders));
+    localStorage.setItem('muscle_chicken_orders', JSON.stringify(orders));
   }, [orders]);
 
   const addToCart = (product: Product, quantity = 1, variant?: string, addons?: string[], notes?: string) => {
@@ -151,8 +151,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const deliveryFee = selectedZone ? selectedZone.delivery_fee : 15000;
   const taxableAmount = Math.max(0, subtotal - discountAmount);
-  const taxAmount = Math.round(taxableAmount * 0.10); // 10% Tax
-  const serviceFeeAmount = Math.round(taxableAmount * 0.05); // 5% Service fee
+  const taxAmount = Math.round(taxableAmount * 0.10); // 10% Restaurant Tax PB1
+  const serviceFeeAmount = Math.round(taxableAmount * 0.05); // 5% Service packaging fee
   const grandTotal = Math.max(0, taxableAmount + deliveryFee + taxAmount + serviceFeeAmount);
 
   const placeOrder = async (
@@ -163,10 +163,10 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     customerNote?: string
   ) => {
     if (cart.length === 0) {
-      return { success: false, error: 'Keranjang belanja Anda masih kosong.' };
+      return { success: false, error: 'Keranjang belanja Muscle Chicken Anda masih kosong.' };
     }
 
-    const orderNumber = `ORD-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${Math.floor(1000 + Math.random() * 9000)}`;
+    const orderNumber = `MC-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${Math.floor(1000 + Math.random() * 9000)}`;
 
     const newOrder: Order = {
       id: `ord-${Date.now()}`,
@@ -181,12 +181,12 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       total: grandTotal,
       payment_method: paymentMethod,
       payment_status: paymentMethod === 'CASH_ON_DELIVERY' ? 'UNPAID' : 'PAID',
-      order_status: 'PENDING',
+      order_status: 'ORDER RECEIVED',
       delivery_address: deliveryAddress,
       customer_note: customerNote,
       created_at: new Date().toISOString(),
       items: cart.map((c) => ({
-        id: `oi-${Date.now()}-${Math.random()}`,
+        id: `oi-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
         order_id: `ord-${Date.now()}`,
         product_id: c.product.id,
         product_name: c.product.name,
@@ -199,8 +199,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         {
           id: `sh-${Date.now()}`,
           order_id: `ord-${Date.now()}`,
-          status: 'PENDING',
-          note: 'Pesanan baru telah diterima oleh sistem ICUISENE UMMU A4.',
+          status: 'ORDER RECEIVED',
+          note: 'Pesanan resmi telah diterima di kitchen terminal Muscle Chicken Indonesia.',
           created_at: new Date().toISOString()
         }
       ]
@@ -218,7 +218,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
           const newHistory = [
             ...(ord.status_history || []),
             {
-              id: `sh-${Date.now()}`,
+              id: `sh-${Date.now()}-${Math.random().toString(36).substring(2, 5)}`,
               order_id: orderId,
               status: newStatus,
               note: note || `Status pesanan diperbarui menjadi ${newStatus}`,

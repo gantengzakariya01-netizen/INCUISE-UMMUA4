@@ -54,12 +54,27 @@ export interface Product {
   minimum_stock?: number;
   rating: number;
   sold_count: number;
+  calories?: number;
+  spicy_level?: number;
+  portion?: string;
+  highlight?: string;
   is_available: boolean;
   is_featured?: boolean;
   is_best_seller?: boolean;
   variants?: ProductVariant[];
   addons?: ProductAddon[];
   created_at?: string;
+}
+
+export interface StructuredAddress {
+  province: string;
+  city: string;
+  district: string;
+  village: string;
+  street: string;
+  houseNumber: string;
+  postalCode: string;
+  additionalDetails?: string;
 }
 
 export interface CartItem {
@@ -84,7 +99,20 @@ export interface Promo {
   is_active: boolean;
 }
 
-export type OrderStatus = 'PENDING' | 'CONFIRMED' | 'PREPARING' | 'ON_DELIVERY' | 'DELIVERED' | 'CANCELLED';
+export type OrderStatus =
+  | 'ORDER RECEIVED'
+  | 'PAYMENT CONFIRMED'
+  | 'PREPARING INGREDIENTS'
+  | 'COOKING ON HIGH HEAT'
+  | 'PACKED & READY'
+  | 'OUT FOR DELIVERY'
+  | 'COMPLETED'
+  | 'CANCELLED'
+  | 'PENDING'
+  | 'CONFIRMED'
+  | 'PREPARING'
+  | 'ON_DELIVERY'
+  | 'DELIVERED';
 export type PaymentStatus = 'UNPAID' | 'PAID' | 'FAILED' | 'REFUNDED';
 export type PaymentMethod = 'QRIS' | 'BANK_TRANSFER_BCA' | 'BANK_TRANSFER_MANDIRI' | 'CREDIT_CARD' | 'CASH_ON_DELIVERY';
 

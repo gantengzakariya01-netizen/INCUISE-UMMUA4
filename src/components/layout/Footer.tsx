@@ -1,97 +1,121 @@
 import React from 'react';
-import { MapPin, Phone, Mail, Clock, Share2, Globe, Award, ShieldCheck } from 'lucide-react';
+import { Flame, Clock, MapPin, Phone, Mail, Award, ShieldCheck, Globe } from 'lucide-react';
 import { useUI } from '../../context/UIContext';
+import { RESTAURANT_SETTINGS } from '../../data/restaurantData';
+import { soundEffects } from '../../utils/soundEffects';
 
 export const Footer: React.FC = () => {
   const { openAuthModal } = useUI();
+
   return (
-    <footer className="w-full bg-[#07020e] border-t border-[#d4af37]/20 pt-16 pb-24 md:pb-12 text-[#bda8d6]">
+    <footer id="contact" className="w-full bg-[#060608] border-t border-white/5 pt-16 pb-24 md:pb-12 text-[#8e8a93]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
           
-          {/* Col 1: Brand & Tagline */}
+          {/* Col 1: Brand & Identity */}
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#2a0e4a] via-[#5c2494] to-[#d4af37] p-[1px]">
-                <div className="w-full h-full bg-[#0b0416] rounded-[11px] flex items-center justify-center text-lg">
-                  👑
-                </div>
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#141418] via-[#26262e] to-[#ff8c00]/40 border border-[#ff8c00]/50 flex items-center justify-center p-[1px] shadow-[0_0_15px_rgba(255,140,0,0.3)]">
+                <Flame className="w-5 h-5 text-[#ff8c00]" />
               </div>
-              <span className="font-luxury text-2xl font-bold text-gold-gradient">
-                ICUISENE UMMU A4
-              </span>
+              <div className="flex flex-col">
+                <span className="font-display text-2xl font-bold tracking-wider text-champagne-gradient">
+                  MUSCLE CHICKEN
+                </span>
+                <span className="font-sans text-[9px] font-extrabold tracking-[0.3em] text-[#d5d0c8] uppercase">
+                  INDONESIA
+                </span>
+              </div>
             </div>
-            <p className="text-xs text-white/70 leading-relaxed">
-              Platform kuliner kelas atas dengan cita rasa istimewa. Dibuat dengan bahan organik pilihan dan sentuhan magis racikan Chef Bintang Lima.
+
+            <p className="text-xs text-[#d5d0c8] leading-relaxed">
+              Brand kuliner ayam modern kelas dunia. Menghadirkan kerenyahan bertingkat dengan kaldu daging luar biasa juicy dan rempah artisan 24 jam.
             </p>
-            <div className="flex items-center gap-3 pt-2 text-[#d4af37]">
-              <Award className="w-5 h-5" />
-              <span className="text-xs font-semibold tracking-wide uppercase">Top Culinary Award 2026</span>
+
+            <div className="flex items-center gap-2 pt-2 text-[#ebd19a]">
+              <Award className="w-4 h-4 text-[#ff8c00]" />
+              <span className="text-xs font-mono font-bold uppercase">GOLDEN POULTRY MASTER 2026</span>
             </div>
           </div>
 
           {/* Col 2: Jam Operasional & Layanan */}
           <div className="space-y-3">
-            <h4 className="font-luxury text-lg font-bold text-white tracking-wide border-b border-[#d4af37]/20 pb-2">
-              Jam Operasional & Delivery
+            <h4 className="font-display text-lg tracking-wider text-white border-b border-white/10 pb-2">
+              HOURS & DELIVERY
             </h4>
-            <div className="space-y-2 text-xs">
+            <div className="space-y-2 text-xs text-[#d5d0c8]">
               <div className="flex items-center gap-2">
-                <Clock className="w-4 h-4 text-[#d4af37]" />
-                <span>Senin - Minggu: 10:00 - 22:30 WIB</span>
+                <Clock className="w-4 h-4 text-[#ff8c00]" />
+                <span>{RESTAURANT_SETTINGS.operating_hours}</span>
               </div>
-              <p className="text-white/60 pl-6">Pengiriman kilat dengan armada eksklusif dengan wadah pemanas khusus.</p>
-              <div className="flex items-center gap-2 pt-2">
-                <ShieldCheck className="w-4 h-4 text-[#d4af37]" />
-                <span>Jaminan Higienitas & Jaminan Kualitas 100%</span>
+              <p className="text-[#8e8a93] pl-6">
+                Armada pengantaran berwadah insulasi termal khusus untuk menjaga kerenyahan optimal.
+              </p>
+              <div className="flex items-center gap-2 pt-2 text-emerald-400">
+                <ShieldCheck className="w-4 h-4" />
+                <span className="font-mono text-[11px]">100% STERILE & FRESH GUARANTEED</span>
               </div>
             </div>
           </div>
 
-          {/* Col 3: Cabang Utama */}
+          {/* Col 3: Central Flagship Hub */}
           <div className="space-y-3">
-            <h4 className="font-luxury text-lg font-bold text-white tracking-wide border-b border-[#d4af37]/20 pb-2">
-              Cabang Utama
+            <h4 className="font-display text-lg tracking-wider text-white border-b border-white/10 pb-2">
+              FLAGSHIP HUB
             </h4>
-            <ul className="space-y-2.5 text-xs">
+            <ul className="space-y-2.5 text-xs text-[#d5d0c8]">
               <li className="flex items-start gap-2">
-                <MapPin className="w-4 h-4 text-[#d4af37] shrink-0 mt-0.5" />
-                <span>Jl. H.O.S. Cokroaminoto No. 42, Menteng, Jakarta Pusat</span>
+                <MapPin className="w-4 h-4 text-[#ff8c00] shrink-0 mt-0.5" />
+                <span>{RESTAURANT_SETTINGS.address}</span>
               </li>
               <li className="flex items-center gap-2">
-                <Phone className="w-4 h-4 text-[#d4af37] shrink-0" />
-                <span>+62 21-3190-8888 / +62 812-3456-7890</span>
+                <Phone className="w-4 h-4 text-[#ff8c00] shrink-0" />
+                <span>+{RESTAURANT_SETTINGS.whatsapp_number}</span>
               </li>
               <li className="flex items-center gap-2">
-                <Mail className="w-4 h-4 text-[#d4af37] shrink-0" />
-                <span>vip@cuisene-ummua4.id</span>
+                <Mail className="w-4 h-4 text-[#ff8c00] shrink-0" />
+                <span>{RESTAURANT_SETTINGS.email}</span>
               </li>
             </ul>
           </div>
 
-          {/* Col 4: VIP Newsletter & Social */}
+          {/* Col 4: VIP Newsletter & Portal Admin */}
           <div className="space-y-3">
-            <h4 className="font-luxury text-lg font-bold text-white tracking-wide border-b border-[#d4af37]/20 pb-2">
-              VIP Club Newsletter
+            <h4 className="font-display text-lg tracking-wider text-white border-b border-white/10 pb-2">
+              CHAMPION CLUB
             </h4>
-            <p className="text-xs text-white/70">
-              Dapatkan racikan promosi tersembunyi dan undangan VIP tasting bulanan.
+            <p className="text-xs text-[#d5d0c8]">
+              Dapatkan voucher rahasia mingguan dan rilis varian ayam terbatas.
             </p>
             <form onSubmit={(e) => e.preventDefault()} className="flex items-center gap-2 pt-1">
               <input
                 type="email"
                 placeholder="Email Anda..."
-                className="w-full px-3 py-2 text-xs rounded-lg bg-[#180a2a] border border-[#d4af37]/30 text-white focus:outline-none focus:border-[#d4af37]"
+                className="w-full px-3 py-2 text-xs rounded-xl bg-[#141418] border border-white/10 text-white focus:outline-none focus:border-[#ff8c00]"
               />
-              <button type="submit" className="btn-gold px-4 py-2 rounded-lg text-xs font-bold shrink-0">
-                Gabung
+              <button
+                type="submit"
+                onClick={() => soundEffects.playClick()}
+                className="btn-amber px-4 py-2 rounded-xl text-xs font-black uppercase font-mono tracking-wider shrink-0"
+              >
+                JOIN
               </button>
             </form>
-            <div className="flex items-center gap-4 pt-3">
-              <a href="#" className="p-2 rounded-full bg-white/5 hover:bg-[#d4af37]/20 text-[#d4af37] transition-all" title="Bagikan">
-                <Share2 className="w-4 h-4" />
+            <div className="flex items-center gap-3 pt-3">
+              <a
+                href="#"
+                className="p-2 rounded-full bg-white/5 hover:bg-[#ff8c00]/20 text-[#ebd19a] hover:text-[#ff8c00] transition-colors"
+                title="Instagram"
+              >
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                </svg>
               </a>
-              <a href="#" className="p-2 rounded-full bg-white/5 hover:bg-[#d4af37]/20 text-[#d4af37] transition-all" title="Website Resmi">
+              <a
+                href="#"
+                className="p-2 rounded-full bg-white/5 hover:bg-[#ff8c00]/20 text-[#ebd19a] hover:text-[#ff8c00] transition-colors"
+                title="Official Website"
+              >
                 <Globe className="w-4 h-4" />
               </a>
             </div>
@@ -99,17 +123,20 @@ export const Footer: React.FC = () => {
 
         </div>
 
-        {/* Bottom Copyright */}
-        <div className="mt-12 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between text-xs text-white/40 gap-4">
-          <p>© 2026 ICUISENE UMMU A4. Hak Cipta Dilindungi Undang-Undang.</p>
+        {/* Bottom Copyright & Admin Trigger */}
+        <div className="mt-12 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between text-xs text-[#8e8a93] gap-4">
+          <p>© 2026 MUSCLE CHICKEN INDONESIA. All Rights Reserved.</p>
           <div className="flex items-center gap-6">
-            <a href="#" className="hover:text-white transition-colors">Syarat & Ketentuan</a>
-            <a href="#" className="hover:text-white transition-colors">Kebijakan Privasi</a>
+            <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
+            <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
             <button
-              onClick={() => openAuthModal('ADMIN')}
-              className="hover:text-[#d4af37] transition-colors"
+              onClick={() => {
+                openAuthModal('ADMIN');
+                soundEffects.playClick();
+              }}
+              className="text-[#ff8c00] hover:underline font-mono font-bold"
             >
-              Portal Admin
+              Portal Admin (AMALIA ROSVALITA)
             </button>
           </div>
         </div>
