@@ -3,8 +3,8 @@ import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
 import { useUI } from '../../context/UIContext';
 import { Modal } from '../ui/Modal';
-import type { OrderStatus, Product } from '../../types';
-import { INITIAL_PRODUCTS, INITIAL_PROMOS } from '../../data/restaurantData';
+import type { OrderStatus } from '../../types';
+import { INITIAL_PROMOS, FALLBACK_FOOD_IMAGE } from '../../data/restaurantData';
 import {
   Package,
   ShoppingBag,
@@ -22,10 +22,9 @@ import { soundEffects } from '../../utils/soundEffects';
 export const AdminDashboardModal: React.FC = () => {
   const { user, role, hasPermission, logout } = useAuth();
   const { isAdminOpen, setIsAdminOpen, showToast, openTrackingForOrder } = useUI();
-  const { orders, updateOrderStatus } = useCart();
+  const { orders, updateOrderStatus, products, toggleProductAvailability, updateProductStock } = useCart();
 
   const [adminTab, setAdminTab] = useState<'ORDERS' | 'PRODUCTS' | 'PROMOS' | 'REPORTS'>('ORDERS');
-  const [productList, setProductList] = useState<Product[]>(INITIAL_PRODUCTS);
   const [promosList, setPromosList] = useState(INITIAL_PROMOS);
   const [orderFilter, setOrderFilter] = useState<string>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
@@ -82,10 +81,8 @@ export const AdminDashboardModal: React.FC = () => {
   // Handle stock toggle
   const toggleStockAvailability = (productId: string) => {
     soundEffects.playClick();
-    setProductList((prev) =>
-      prev.map((p) => (p.id === productId ? { ...p, is_available: !p.is_available } : p))
-    );
-    showToast('Product inventory availability updated.', 'info');
+    toggleProductAvailability(productId);
+    showToast('Status ketersediaan stok produk berhasil diperbarui!', 'info');
   };
 
   // Handle promo toggle
@@ -208,7 +205,7 @@ export const AdminDashboardModal: React.FC = () => {
               }`}
             >
               <Package className="w-4 h-4" />
-              <span>Menu Inventory ({productList.length})</span>
+              <span>Menu Inventory ({products.length})</span>
             </button>
           )}
 
@@ -366,12 +363,12 @@ export const AdminDashboardModal: React.FC = () => {
           <div className="space-y-4 animate-fade-in">
             <div className="flex items-center justify-between">
               <h4 className="text-xs font-bold text-white uppercase tracking-wider font-accent">
-                Active Kitchen Inventory & Pricing ({productList.length} Items)
+                Active Kitchen Inventory & Pricing ({products.length} Items)
               </h4>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-              {productList.map((prod) => (
+              {products.map((prod) => (
                 <div
                   key={prod.id}
                   className="p-3.5 rounded-xl bg-[#14141a] border border-white/10 flex gap-3.5 items-center hover:border-white/20 transition-all"
@@ -379,6 +376,9 @@ export const AdminDashboardModal: React.FC = () => {
                   <img
                     src={prod.image_url}
                     alt={prod.name}
+                    onError={(e) => {
+                      (e.currentTarget as HTMLImageElement).src = FALLBACK_FOOD_IMAGE;
+                    }}
                     className="w-16 h-16 rounded-xl object-cover border border-white/10 shrink-0"
                   />
 
@@ -394,20 +394,49 @@ export const AdminDashboardModal: React.FC = () => {
                         </span>
                       )}
                     </div>
-                    <span className="text-[10px] text-white/40 block mt-0.5">
-                      Stock: {prod.stock} portions • Sold: {prod.sold_count}
+                    <span className="text-[10px] text-white/40 block mt-0.5 font-mono">
+                      Stok: {prod.stock} porsi • Terjual: {prod.sold_count}
                     </span>
+
+                    {/* Stock Quick Adjustment (+ / -) */}
+                    <div className="flex items-center gap-1.5 mt-2 bg-black/40 p-1 rounded-lg border border-white/10 w-fit">
+                      <span className="text-[9px] text-white/50 px-1 font-mono">Ubah:</span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          soundEffects.playClick();
+                          updateProductStock(prod.id, Math.max(0, prod.stock - 5));
+                          showToast(`Stok ${prod.name} dikurangi 5.`, 'info');
+                        }}
+                        className="px-2 py-0.5 rounded bg-white/10 hover:bg-white/20 text-white text-[10px] font-bold"
+                        title="-5 porsi"
+                      >
+                        -5
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          soundEffects.playClick();
+                          updateProductStock(prod.id, prod.stock + 5);
+                          showToast(`Stok ${prod.name} ditambah 5.`, 'info');
+                        }}
+                        className="px-2 py-0.5 rounded bg-white/10 hover:bg-white/20 text-white text-[10px] font-bold"
+                        title="+5 porsi"
+                      >
+                        +5
+                      </button>
+                    </div>
                   </div>
 
                   <button
                     onClick={() => toggleStockAvailability(prod.id)}
                     className={`px-3 py-1.5 rounded-xl text-[11px] font-bold transition-all shrink-0 ${
-                      prod.is_available
+                      prod.is_available && prod.stock > 0
                         ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/30'
                         : 'bg-rose-500/20 text-rose-400 border border-rose-500/30 hover:bg-rose-500/30'
                     }`}
                   >
-                    {prod.is_available ? 'IN STOCK' : 'SOLD OUT'}
+                    {prod.is_available && prod.stock > 0 ? 'IN STOCK' : 'SOLD OUT'}
                   </button>
                 </div>
               ))}

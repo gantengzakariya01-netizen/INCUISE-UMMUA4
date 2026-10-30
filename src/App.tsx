@@ -14,6 +14,7 @@ import { MobileNav } from './components/layout/MobileNav';
 
 // Home Sections
 import { Hero } from './components/home/Hero';
+import { ChickenReelsCarousel } from './components/home/ChickenReelsCarousel';
 import { ScrollJourney } from './components/home/ScrollJourney';
 import { BrandStatement } from './components/home/BrandStatement';
 import { ProductShowcase } from './components/home/ProductShowcase';
@@ -38,7 +39,7 @@ export const AppContent: React.FC = () => {
   const [loaderComplete, setLoaderComplete] = useState(false);
 
   return (
-    <div className="min-h-screen bg-[#0d0d10] text-[#faf7f2] flex flex-col font-sans selection:bg-[#ff8c00] selection:text-black overflow-x-hidden relative">
+    <div className="min-h-screen bg-[#0D1120] text-[#ECE8DE] flex flex-col font-sans selection:bg-[#FFB347] selection:text-[#0D1120] overflow-x-hidden relative">
       {/* Cinematic Opening Loader */}
       {!loaderComplete && (
         <OpeningLoader onComplete={() => setLoaderComplete(true)} />
@@ -61,7 +62,10 @@ export const AppContent: React.FC = () => {
         {/* 1. Fullscreen Cinematic Hero */}
         <Hero />
 
-        {/* 2. Interactive Scroll Transformation Journey */}
+        {/* 2. CHICKENLINE Cinematic Food Reel Carousel (Convex 3D + Floating Stickers + CTA) */}
+        <ChickenReelsCarousel />
+
+        {/* 3. Interactive Scroll Transformation Journey */}
         <ScrollJourney />
 
         {/* 3. High-Impact Giant Manifesto Statement */}

@@ -1,5 +1,7 @@
 import type { Category, Product, Promo, DeliveryZone, Review } from '../types';
 
+export const FALLBACK_FOOD_IMAGE = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='450' viewBox='0 0 600 450'><rect width='100%' height='100%' fill='%23141418'/><circle cx='300' cy='190' r='90' fill='%231f1f26' stroke='%23ff8c00' stroke-width='2'/><text x='300' y='210' font-family='sans-serif' font-size='60' text-anchor='middle'>🍗</text><text x='300' y='320' font-family='sans-serif' font-size='20' font-weight='800' fill='%23ff8c00' text-anchor='middle' letter-spacing='3'>MUSCLE CHICKEN</text><text x='300' y='345' font-family='sans-serif' font-size='12' font-weight='500' fill='%238e8a93' text-anchor='middle'>HIGH-HEAT ARTISAN POULTRY</text></svg>";
+
 export const INITIAL_CATEGORIES: Category[] = [
   {
     id: 'cat-fried',

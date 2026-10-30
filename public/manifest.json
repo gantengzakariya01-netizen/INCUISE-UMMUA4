@@ -1,0 +1,17 @@
+{
+  "short_name": "Muscle Chicken",
+  "name": "Muscle Chicken Indonesia — High-Heat Artisan Poultry",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "192x192 512x512"
+    }
+  ],
+  "start_url": "./",
+  "background_color": "#0d0d10",
+  "theme_color": "#0d0d10",
+  "display": "standalone",
+  "orientation": "portrait",
+  "description": "Not Just Chicken. This is Muscle Chicken Indonesia."
+}

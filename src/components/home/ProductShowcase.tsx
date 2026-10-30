@@ -1,30 +1,43 @@
 import React, { useState } from 'react';
-import { INITIAL_PRODUCTS } from '../../data/restaurantData';
+import { FALLBACK_FOOD_IMAGE } from '../../data/restaurantData';
 import { useCart } from '../../context/CartContext';
 import { useUI } from '../../context/UIContext';
 import { soundEffects } from '../../utils/soundEffects';
 import { Star, ShoppingBag, ArrowRight, Zap, CheckCircle2 } from 'lucide-react';
 
 export const ProductShowcase: React.FC = () => {
-  const showcaseItems = INITIAL_PRODUCTS.slice(0, 4);
+  const { products, addToCart } = useCart();
+  const showcaseItems = products.slice(0, 4);
   const [activeIndex, setActiveIndex] = useState(0);
 
-  const { addToCart } = useCart();
   const { setSelectedFoodModal, setIsCheckoutOpen, showToast } = useUI();
 
-  const current = showcaseItems[activeIndex];
+  const current = showcaseItems[activeIndex] || showcaseItems[0];
+  const isAvailable = current ? current.is_available && current.stock > 0 : false;
 
   const handleAddToCart = () => {
-    addToCart(current);
+    if (!current) return;
+    const res = addToCart(current);
     soundEffects.playClick();
-    showToast(`${current.name} added to cart!`);
+    if (res.success) {
+      showToast(res.message, 'success');
+    } else {
+      showToast(res.message, 'error');
+    }
   };
 
   const handleBuyNow = () => {
-    addToCart(current);
+    if (!current) return;
+    const res = addToCart(current);
     soundEffects.playClick();
-    setIsCheckoutOpen(true);
+    if (res.success) {
+      setIsCheckoutOpen(true);
+    } else {
+      showToast(res.message, 'error');
+    }
   };
+
+  if (!current) return null;
 
   return (
     <section id="showcase" className="py-24 relative bg-[#09090b] border-t border-white/5 overflow-hidden">
@@ -58,131 +71,144 @@ export const ProductShowcase: React.FC = () => {
                 }}
                 className={`px-4 py-2 rounded-xl font-display text-sm tracking-wider uppercase transition-all whitespace-nowrap ${
                   activeIndex === idx
-                    ? 'bg-[#ff8c00] text-[#0d0d10] font-black shadow-[0_0_20px_rgba(255,140,0,0.5)] scale-105'
-                    : 'bg-[#18181d] text-white/50 hover:text-white border border-white/10'
+                    ? 'bg-[#ff8c00] text-black font-black shadow-[0_0_15px_rgba(255,140,0,0.4)]'
+                    : 'bg-[#141418] text-[#d5d0c8] border border-white/10 hover:border-white/30'
                 }`}
               >
-                0{idx + 1} {item.category_name}
+                0{idx + 1} — {item.category_name}
               </button>
             ))}
           </div>
         </div>
 
-        {/* Main Fullscreen Showcase Card */}
-        <div className="glass-panel-heavy rounded-3xl p-6 sm:p-12 border border-[#d8b26e]/30 shadow-2xl">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-            
-            {/* Left: Product Visual */}
-            <div className="lg:col-span-7">
-              <div
-                className="relative aspect-[16/10] sm:aspect-[16/9] rounded-2xl overflow-hidden bg-black/60 border border-white/10 shadow-2xl group cursor-pointer"
-                onClick={() => {
-                  setSelectedFoodModal(current);
-                  soundEffects.playClick();
+        {/* Current Active Showcase Banner / Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-[#141418] rounded-3xl border border-white/10 p-6 sm:p-10 shadow-2xl relative overflow-hidden">
+          
+          {/* Left Column: Big Visual */}
+          <div className="lg:col-span-7 relative">
+            <div
+              className="relative aspect-[16/10] sm:aspect-[16/9] rounded-2xl overflow-hidden bg-black/60 group cursor-pointer border border-white/5"
+              onClick={() => {
+                setSelectedFoodModal(current);
+                soundEffects.playClick();
+              }}
+              data-cursor="VIEW"
+            >
+              <img
+                src={current.image_url}
+                alt={current.name}
+                onError={(e) => {
+                  (e.currentTarget as HTMLImageElement).src = FALLBACK_FOOD_IMAGE;
                 }}
-                data-cursor="VIEW"
-              >
-                <img
-                  key={current.id}
-                  src={current.image_url}
-                  alt={current.name}
-                  className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105 animate-fade-in"
-                />
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
 
-                {/* Overlays */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
+              {/* Floating Tag */}
+              <div className="absolute top-4 left-4">
+                <span className={`px-3 py-1 rounded-full text-xs font-black uppercase font-display tracking-wider shadow-lg ${
+                  isAvailable ? 'bg-[#ff8c00] text-black' : 'bg-rose-700 text-white'
+                }`}>
+                  {isAvailable ? (current.highlight || 'CHEF SELECTION') : 'SOLD OUT'}
+                </span>
+              </div>
 
-                {/* Badge Number */}
-                <div className="absolute top-4 left-4">
-                  <span className="font-display text-4xl sm:text-5xl text-white/30 font-black">
-                    0{activeIndex + 1}
+              {/* Nutrition spec badge */}
+              <div className="absolute bottom-4 left-4 flex items-center gap-2">
+                {current.calories && (
+                  <span className="px-3 py-1 rounded-full text-[11px] font-mono font-bold bg-black/70 text-[#ebd19a] border border-white/15 backdrop-blur-md">
+                    🔥 {current.calories} KCAL
                   </span>
-                </div>
-
-                {/* Status Pill */}
-                <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-xs font-mono bg-black/70 backdrop-blur-md px-4 py-2.5 rounded-xl border border-white/10">
-                  <div className="flex items-center gap-2 text-emerald-400 font-bold">
-                    <CheckCircle2 className="w-4 h-4" />
-                    <span>STOCK READY ({current.stock} Porsi Tersisa)</span>
-                  </div>
-                  {current.calories && (
-                    <span className="text-[#ebd19a] font-bold">
-                      🔥 {current.calories} KCAL
-                    </span>
-                  )}
-                </div>
+                )}
+                <span className="px-3 py-1 rounded-full text-[11px] font-mono font-bold bg-black/70 text-emerald-400 border border-white/15 backdrop-blur-md flex items-center gap-1">
+                  <CheckCircle2 className="w-3 h-3" />
+                  HIGH PROTEIN
+                </span>
+                <span className="px-3 py-1 rounded-full text-[11px] font-mono font-bold bg-black/70 text-white/80 border border-white/15 backdrop-blur-md">
+                  STOK: {current.stock}
+                </span>
               </div>
             </div>
+          </div>
 
-            {/* Right: Technical Specs & Instant Order */}
-            <div className="lg:col-span-5 space-y-5 text-left">
-              <div>
-                <span className="font-display tracking-[0.2em] text-xs text-[#ff8c00] uppercase block mb-1">
-                  {current.highlight || current.category_name}
+          {/* Right Column: Spec Sheet & Order CTAs */}
+          <div className="lg:col-span-5 space-y-6">
+            <div>
+              <span className="text-xs font-mono font-bold text-[#ff8c00] uppercase tracking-[0.2em] block mb-1">
+                INDEX 0{activeIndex + 1} • {current.category_name}
+              </span>
+              <h3 className="font-display text-3xl sm:text-4xl text-white tracking-tight leading-tight">
+                {current.name}
+              </h3>
+            </div>
+
+            {/* Rating & Sold count */}
+            <div className="flex items-center gap-3 text-xs font-mono">
+              <div className="flex items-center gap-1 text-amber-400 font-bold">
+                <Star className="w-4 h-4 fill-amber-400" />
+                <span>{current.rating}</span>
+              </div>
+              <span className="text-white/30">•</span>
+              <span className="text-[#d5d0c8]">{current.sold_count}+ Pesanan Sukses</span>
+            </div>
+
+            <p className="text-sm text-[#d5d0c8] leading-relaxed">
+              {current.description}
+            </p>
+
+            {/* Portion Specs */}
+            {current.portion && (
+              <div className="p-3 rounded-xl bg-white/5 border border-white/10 text-xs font-mono text-[#ebd19a]">
+                <strong>STANDAR PORSI:</strong> {current.portion}
+              </div>
+            )}
+
+            {/* Price & Primary Action CTAs */}
+            <div className="pt-4 border-t border-white/10 flex flex-col gap-4">
+              <div className="flex items-baseline gap-3">
+                <span className="font-display text-3xl sm:text-4xl text-amber-gradient font-bold">
+                  Rp {(current.promo_price || current.price).toLocaleString('id-ID')}
                 </span>
-                <h3 className="font-display text-3xl sm:text-4xl text-white leading-tight">
-                  {current.name}
-                </h3>
-              </div>
-
-              {/* Rating & Sold count */}
-              <div className="flex items-center gap-3 text-xs font-mono">
-                <div className="flex items-center gap-1 text-amber-400 font-bold">
-                  <Star className="w-4 h-4 fill-amber-400" />
-                  <span>{current.rating}</span>
-                </div>
-                <span className="text-white/30">•</span>
-                <span className="text-[#d5d0c8]">{current.sold_count}+ Pesanan Sukses</span>
-              </div>
-
-              <p className="text-sm text-[#d5d0c8] leading-relaxed">
-                {current.description}
-              </p>
-
-              {/* Portion Specs */}
-              {current.portion && (
-                <div className="p-3 rounded-xl bg-white/5 border border-white/10 text-xs font-mono text-[#ebd19a]">
-                  <strong>STANDAR PORSI:</strong> {current.portion}
-                </div>
-              )}
-
-              {/* Price & Primary Action CTAs */}
-              <div className="pt-4 border-t border-white/10 flex flex-col gap-4">
-                <div className="flex items-baseline gap-3">
-                  <span className="font-display text-3xl sm:text-4xl text-amber-gradient font-bold">
-                    Rp {(current.promo_price || current.price).toLocaleString('id-ID')}
+                {current.promo_price && (
+                  <span className="text-sm text-white/40 line-through font-mono">
+                    Rp {current.price.toLocaleString('id-ID')}
                   </span>
-                  {current.promo_price && (
-                    <span className="text-sm text-white/40 line-through font-mono">
-                      Rp {current.price.toLocaleString('id-ID')}
-                    </span>
-                  )}
-                </div>
-
-                <div className="grid grid-cols-2 gap-3">
-                  <button
-                    onClick={handleAddToCart}
-                    data-cursor="ORDER"
-                    className="btn-outline-champagne py-3 rounded-xl text-xs font-black tracking-wider uppercase flex items-center justify-center gap-2"
-                  >
-                    <ShoppingBag className="w-4 h-4" />
-                    <span>ADD TO CART</span>
-                  </button>
-
-                  <button
-                    onClick={handleBuyNow}
-                    data-cursor="ORDER"
-                    className="btn-amber py-3 rounded-xl text-xs font-black tracking-wider uppercase flex items-center justify-center gap-2 shadow-lg"
-                  >
-                    <span>BUY NOW</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </button>
-                </div>
+                )}
               </div>
 
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  disabled={!isAvailable}
+                  onClick={handleAddToCart}
+                  data-cursor={isAvailable ? "ORDER" : undefined}
+                  className={`py-3 rounded-xl text-xs font-black tracking-wider uppercase flex items-center justify-center gap-2 ${
+                    isAvailable
+                      ? 'btn-outline-champagne'
+                      : 'bg-white/5 text-white/30 border border-white/10 cursor-not-allowed'
+                  }`}
+                >
+                  <ShoppingBag className="w-4 h-4" />
+                  <span>{isAvailable ? 'ADD TO CART' : 'OUT OF STOCK'}</span>
+                </button>
+
+                <button
+                  disabled={!isAvailable}
+                  onClick={handleBuyNow}
+                  data-cursor={isAvailable ? "ORDER" : undefined}
+                  className={`py-3 rounded-xl text-xs font-black tracking-wider uppercase flex items-center justify-center gap-2 shadow-lg ${
+                    isAvailable
+                      ? 'btn-amber'
+                      : 'bg-white/10 text-white/30 cursor-not-allowed'
+                  }`}
+                >
+                  <span>{isAvailable ? 'BUY NOW' : 'HABIS'}</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
             </div>
 
           </div>
+
         </div>
 
       </div>

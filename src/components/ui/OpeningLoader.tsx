@@ -38,12 +38,12 @@ export const OpeningLoader: React.FC<OpeningLoaderProps> = ({ onComplete }) => {
 
   return (
     <div
-      className={`fixed inset-0 z-[9999] bg-[#09090b] flex flex-col items-center justify-center transition-all duration-700 select-none ${
+      className={`fixed inset-0 z-[9999] bg-[#0D1120] flex flex-col items-center justify-center transition-all duration-700 select-none ${
         isFading ? 'opacity-0 pointer-events-none scale-105' : 'opacity-100'
       }`}
     >
       {/* Background ambient lighting */}
-      <div className="absolute w-[500px] h-[500px] bg-[#ff8c00]/10 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute w-[500px] h-[500px] bg-[#FFB347]/15 rounded-full blur-[140px] pointer-events-none" />
 
       <div className="relative z-10 flex flex-col items-center text-center px-6">
         {/* Animated Flame Icon */}

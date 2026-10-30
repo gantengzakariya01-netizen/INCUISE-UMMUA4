@@ -26,7 +26,7 @@ export const BrandStory: React.FC = () => {
   ];
 
   return (
-    <section id="about" className="py-24 relative bg-[#09090b] border-t border-white/5 overflow-hidden">
+    <section id="about-story" className="py-24 relative bg-[#0D1120] border-t border-white/5 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">

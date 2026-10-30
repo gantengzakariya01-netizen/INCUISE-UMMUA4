@@ -1,5 +1,6 @@
 import React from 'react';
 import { Flame } from 'lucide-react';
+import { FALLBACK_FOOD_IMAGE } from '../../data/restaurantData';
 
 export const FoodCinematic: React.FC = () => {
   const highlights = [
@@ -30,9 +31,9 @@ export const FoodCinematic: React.FC = () => {
   ];
 
   return (
-    <section className="py-24 relative bg-[#09090b] border-t border-white/5 overflow-hidden">
+    <section id="gallery" className="py-24 relative bg-[#0D1120] border-t border-white/5 overflow-hidden">
       {/* Background glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] bg-[#ff8c00]/10 rounded-full blur-[180px] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] bg-[#FFB347]/10 rounded-full blur-[180px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
@@ -60,6 +61,9 @@ export const FoodCinematic: React.FC = () => {
               <img
                 src={tile.image}
                 alt={tile.title}
+                onError={(e) => {
+                  (e.currentTarget as HTMLImageElement).src = FALLBACK_FOOD_IMAGE;
+                }}
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#09090b] via-[#09090b]/40 to-transparent" />

@@ -4,6 +4,7 @@ import { useUI } from '../../context/UIContext';
 import { X, Trash2, Plus, Minus, Ticket, ShoppingBag, ArrowRight, Check, Sparkles } from 'lucide-react';
 import { Badge } from '../ui/Badge';
 import { soundEffects } from '../../utils/soundEffects';
+import { FALLBACK_FOOD_IMAGE } from '../../data/restaurantData';
 
 export const CartDrawer: React.FC = () => {
   const {
@@ -116,6 +117,9 @@ export const CartDrawer: React.FC = () => {
                 <img
                   src={item.product.image_url}
                   alt={item.product.name}
+                  onError={(e) => {
+                    (e.currentTarget as HTMLImageElement).src = FALLBACK_FOOD_IMAGE;
+                  }}
                   className="w-16 h-16 rounded-lg object-cover border border-white/10 shrink-0 group-hover:scale-105 transition-transform"
                 />
 
@@ -161,7 +165,10 @@ export const CartDrawer: React.FC = () => {
                     <button
                       onClick={() => {
                         soundEffects.playClick();
-                        updateQuantity(item.id, item.quantity + 1);
+                        const res = updateQuantity(item.id, item.quantity + 1);
+                        if (res && !res.success && res.message) {
+                          showToast(res.message, 'error');
+                        }
                       }}
                       className="text-white/70 hover:text-white"
                     >

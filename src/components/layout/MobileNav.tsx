@@ -2,7 +2,7 @@ import React from 'react';
 import { useCart } from '../../context/CartContext';
 import { useUI } from '../../context/UIContext';
 import { useAuth } from '../../context/AuthContext';
-import { Home, UtensilsCrossed, ShoppingBag, Truck, User } from 'lucide-react';
+import { Home, Flame, UtensilsCrossed, ShoppingBag, User } from 'lucide-react';
 import { soundEffects } from '../../utils/soundEffects';
 
 export const MobileNav: React.FC = () => {
@@ -13,24 +13,33 @@ export const MobileNav: React.FC = () => {
   const totalItemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
-    <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#0d0d10]/95 backdrop-blur-xl border-t border-white/10 py-2.5 px-4 shadow-[0_-5px_25px_rgba(0,0,0,0.8)]">
+    <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#0D1120]/95 backdrop-blur-xl border-t border-[#FFB347]/20 py-2 px-3 shadow-[0_-5px_25px_rgba(0,0,0,0.9)]">
       <div className="flex items-center justify-around">
         <a
           href="#hero"
           onClick={() => soundEffects.playClick()}
-          className="flex flex-col items-center gap-1 text-white/60 hover:text-[#ff8c00] transition-colors"
+          className="flex flex-col items-center gap-1 text-[#ECE8DE]/60 hover:text-[#FFB347] transition-colors"
         >
-          <Home className="w-5 h-5 text-[#ff8c00]" />
-          <span className="text-[10px] font-accent tracking-wider">HOME</span>
+          <Home className="w-5 h-5 text-[#FFB347]" />
+          <span className="text-[9px] font-mono font-bold tracking-wider">HOME</span>
+        </a>
+
+        <a
+          href="#chicken-reels"
+          onClick={() => soundEffects.playClick()}
+          className="flex flex-col items-center gap-1 text-[#ECE8DE]/60 hover:text-[#FF7A36] transition-colors"
+        >
+          <Flame className="w-5 h-5 text-[#FF7A36] animate-pulse" />
+          <span className="text-[9px] font-mono font-bold tracking-wider">REELS</span>
         </a>
 
         <a
           href="#menu-catalog"
           onClick={() => soundEffects.playClick()}
-          className="flex flex-col items-center gap-1 text-white/60 hover:text-[#ff8c00] transition-colors"
+          className="flex flex-col items-center gap-1 text-[#ECE8DE]/60 hover:text-[#FFB347] transition-colors"
         >
-          <UtensilsCrossed className="w-5 h-5 text-white/80" />
-          <span className="text-[10px] font-accent tracking-wider">MENU</span>
+          <UtensilsCrossed className="w-5 h-5 text-[#ECE8DE]/80" />
+          <span className="text-[9px] font-mono font-bold tracking-wider">MENU</span>
         </a>
 
         <button
@@ -38,41 +47,36 @@ export const MobileNav: React.FC = () => {
             soundEffects.playClick();
             setIsCartOpen(true);
           }}
-          className="relative flex flex-col items-center gap-1 text-white/60 hover:text-[#ff8c00] transition-colors"
+          className="relative flex flex-col items-center gap-1 text-[#ECE8DE]/60 hover:text-[#FFB347] transition-colors"
         >
           <div className="relative">
-            <ShoppingBag className="w-5 h-5 text-[#ff8c00]" />
+            <ShoppingBag className="w-5 h-5 text-[#FFB347]" />
             {totalItemCount > 0 && (
-              <span className="absolute -top-1.5 -right-2.5 w-4 h-4 rounded-full bg-[#ff8c00] text-black text-[10px] font-extrabold flex items-center justify-center font-mono animate-pulse">
+              <span className="absolute -top-1.5 -right-2.5 w-4 h-4 rounded-full bg-[#FF7A36] text-[#0D1120] text-[10px] font-black flex items-center justify-center font-mono animate-pulse shadow-md">
                 {totalItemCount}
               </span>
             )}
           </div>
-          <span className="text-[10px] font-accent tracking-wider">CART</span>
+          <span className="text-[9px] font-mono font-bold tracking-wider">CART</span>
         </button>
-
-        {latestOrder && (
-          <button
-            onClick={() => {
-              soundEffects.playClick();
-              openTrackingForOrder(latestOrder);
-            }}
-            className="flex flex-col items-center gap-1 text-white/60 hover:text-[#ff8c00] transition-colors"
-          >
-            <Truck className="w-5 h-5 text-[#d8b26e]" />
-            <span className="text-[10px] font-accent tracking-wider">TRACK</span>
-          </button>
-        )}
 
         <button
           onClick={() => {
             soundEffects.playClick();
-            user ? setIsProfileOpen(true) : setIsAuthOpen(true);
+            if (latestOrder) {
+              openTrackingForOrder(latestOrder);
+            } else if (user) {
+              setIsProfileOpen(true);
+            } else {
+              setIsAuthOpen(true);
+            }
           }}
-          className="flex flex-col items-center gap-1 text-white/60 hover:text-[#ff8c00] transition-colors"
+          className="flex flex-col items-center gap-1 text-[#ECE8DE]/60 hover:text-[#FFB347] transition-colors"
         >
-          <User className="w-5 h-5 text-white/80" />
-          <span className="text-[10px] font-accent tracking-wider">{user ? 'ACCOUNT' : 'SIGN IN'}</span>
+          <User className="w-5 h-5 text-[#ECE8DE]/80" />
+          <span className="text-[9px] font-mono font-bold tracking-wider">
+            {latestOrder ? 'TRACK' : user ? 'PROFILE' : 'SIGN IN'}
+          </span>
         </button>
       </div>
     </div>
